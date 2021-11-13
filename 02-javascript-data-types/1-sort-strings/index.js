@@ -17,12 +17,3 @@ export function sortStrings(arr, param = 'asc') {
     return resArr.reverse();
   }
 }
-
-
-
-
-
-
-
-
-
