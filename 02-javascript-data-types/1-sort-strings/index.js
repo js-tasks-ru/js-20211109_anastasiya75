@@ -6,14 +6,15 @@
  */
 export function sortStrings(arr, param = 'asc') {
   const arrNormalize = arr.map(item => item.normalize());
-  const compareFn = (a, b) => a.localeCompare(b, ['ru', 'en'], {sensitivity: 'variant', caseFirst: 'upper'});
-  const resArr = arrNormalize.sort(compareFn);
+  const compareFn = (a, b) => {
+    const compareParams = [['ru', 'en'], {sensitivity: 'variant', caseFirst: 'upper'}];
+    if (param === 'asc') {
+      return a.localeCompare(b, ...compareParams);
+    }
+    else {
+      return b.localeCompare(a, ...compareParams);
+    }
+  };
 
-  if (param === 'asc') {
-    return resArr;
-  }
-
-  if (param === 'desc') {
-    return resArr.reverse();
-  }
+  return arrNormalize.sort(compareFn);
 }
