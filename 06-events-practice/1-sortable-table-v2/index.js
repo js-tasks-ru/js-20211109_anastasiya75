@@ -87,7 +87,7 @@ export default class SortableTable {
     this.sort(this.sorted.id, this.sorted.order);
 
     SortableTable.sortableCells.forEach(el => {
-      el.addEventListener('click', this.handleClick);
+      el.addEventListener('pointerdown', this.handleClick);
     });
   }
 
@@ -144,7 +144,7 @@ export default class SortableTable {
 
   destroy() {
     SortableTable.sortableCells.forEach(el => {
-      el.removeEventListener('click', this.handleClick);
+      el.removeEventListener('pointerdown', this.handleClick);
     });
     this.remove();
     this.element = null;
