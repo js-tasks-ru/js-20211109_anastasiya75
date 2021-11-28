@@ -1,12 +1,12 @@
 export default class SortableTable {
   element;
   subElements = {};
+
   static sortableCells;
 
   handleClick = (e) => {
     this.sorted.order = this.sorted.order === 'asc' ? 'desc' : 'asc';
     this.sorted.id = e.currentTarget.getAttribute('data-id');
-    //e.currentTarget.dataset.order = this.sorted.order;
     this.sort(this.sorted.id, this.sorted.order);
   }
 
@@ -81,13 +81,12 @@ export default class SortableTable {
     element.innerHTML = this.getTable();
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
-    const allColumns = this.element.querySelectorAll('.sortable-table__cell[data-sortable="true"]');
-    SortableTable.sortableCells = allColumns;
+    SortableTable.sortableCells = this.element.querySelectorAll('.sortable-table__cell[data-sortable="true"]');
     const defaultSortedColumn = this.element.querySelector(`.sortable-table__cell[data-id="${this.sorted.id}"]`);
     defaultSortedColumn.setAttribute('data-order', this.sorted.order);
     this.sort(this.sorted.id, this.sorted.order);
 
-    allColumns.forEach(el => {
+    SortableTable.sortableCells.forEach(el => {
       el.addEventListener('click', this.handleClick);
     });
   }
