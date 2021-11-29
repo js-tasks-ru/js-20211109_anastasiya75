@@ -9,7 +9,7 @@ class Tooltip {
     Tooltip.instance = this;
 
     const element = document.createElement('div');
-    element.innerHTML = `<div class="tooltip"></div>`;
+    element.innerHTML = `<div class="tooltip" style="top:0;left:0"></div>`;
     this.element = element.firstElementChild;
   }
 
@@ -23,13 +23,13 @@ class Tooltip {
     const tooltip = event.target.dataset.tooltip;
 
     if (tooltip) {
-      this.render(tooltip);
-      this.initialize();
       const positionTooltip = {
         top: Math.round(event.clientY + 10),
         left: Math.round(event.clientX + 20),
       };
       this.element.style.cssText = `top: ${positionTooltip.top}px; left: ${positionTooltip.left}px;`;
+      this.render(tooltip);
+      this.initialize();
     }
   }
 
