@@ -7,10 +7,6 @@ class Tooltip {
       return Tooltip.instance;
     }
     Tooltip.instance = this;
-
-    const element = document.createElement('div');
-    element.innerHTML = `<div class="tooltip"></div>`;
-    this.element = element.firstElementChild;
   }
 
   onPointerOut = () => {
@@ -39,17 +35,13 @@ class Tooltip {
   }
 
   render (text = '') {
-    if (this.element) {
-      this.element.textContent = text;
-      document.body.append(this.element);
-    }
+    const element = document.createElement('div');
+    element.innerHTML = `<div class="tooltip">${text}</div>`;
+    this.element = element.firstElementChild;
+    document.body.append(this.element);
   }
 
   initialize () {
-    this.initEventListeners();
-  }
-
-  initEventListeners () {
     document.body.addEventListener('pointerout', this.onPointerOut);
     document.body.addEventListener('pointerover', this.onPointerOver);
   }
