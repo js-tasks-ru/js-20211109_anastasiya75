@@ -9,13 +9,14 @@ class Tooltip {
     Tooltip.instance = this;
 
     const element = document.createElement('div');
-    element.innerHTML = `<div class="tooltip" style="top:0;left:0"></div>`;
+    element.innerHTML = `<div class="tooltip"></div>`;
     this.element = element.firstElementChild;
   }
 
   onPointerOut = () => {
     if (this.element) {
       this.remove();
+      document.body.removeEventListener('pointermove', this.onPointerMove);
     }
   }
 
@@ -23,24 +24,28 @@ class Tooltip {
     const tooltip = event.target.dataset.tooltip;
 
     if (tooltip) {
-      const positionTooltip = {
-        top: Math.round(event.clientY + 10),
-        left: Math.round(event.clientX + 20),
-      };
-      this.element.style.cssText = `top: ${positionTooltip.top}px; left: ${positionTooltip.left}px;`;
       this.render(tooltip);
       this.initialize();
+      document.body.addEventListener('pointermove', this.onPointerMove);
     }
+  }
+
+  onPointerMove = (event) => {
+    const positionTooltip = {
+      top: Math.round(event.clientY + 10),
+      left: Math.round(event.clientX + 20),
+    };
+    this.element.style.cssText = `top: ${positionTooltip.top}px; left: ${positionTooltip.left}px;`;
   }
 
   render (text = '') {
     if (this.element) {
       this.element.textContent = text;
+      document.body.append(this.element);
     }
   }
 
   initialize () {
-    document.body.append(this.element);
     this.initEventListeners();
   }
 
