@@ -9,10 +9,7 @@ export default class ColumnChart {
 
   constructor({
     url = '',
-    range = {
-      from: new Date(),
-      to: new Date(),
-    },
+    range = {},
     label = '',
     link = '',
     formatHeading = data => data
@@ -48,6 +45,8 @@ export default class ColumnChart {
     element.innerHTML = this.template;
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
+
+    this.update(this.range.from, this.range.to);
   }
 
   getSubElements(element) {
@@ -82,8 +81,10 @@ export default class ColumnChart {
 
   update(dateStart, dateEnd) {
     const apiUrl = new URL(this.url, BACKEND_URL);
-    apiUrl.searchParams.set("from", dateStart);
-    apiUrl.searchParams.set("to", dateEnd);
+    this.range.from = new Date(dateStart);
+    this.range.to = new Date(dateEnd);
+    apiUrl.searchParams.set("from", this.range.from);
+    apiUrl.searchParams.set("to", this.range.to);
 
     fetchJson(apiUrl).then(data => {
       const dataValues = Object.values(data);
