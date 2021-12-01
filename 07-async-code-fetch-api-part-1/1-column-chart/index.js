@@ -78,26 +78,21 @@ export default class ColumnChart {
 
   update(dateStart = new Date(), dateEnd = new Date()) {
     const apiUrl = new URL(this.url, BACKEND_URL);
-    // console.log('dateStart', dateStart, 'dateEnd', dateEnd);
-    // console.log('this.range.from', this.range.from);
-    // console.log('this.range.to', this.range.to);
-    // this.range.from = dateStart.toISOString();
-    // this.range.to = dateEnd.toISOString();
-    this.range.from = dateStart;
-    this.range.to = dateEnd;
-    apiUrl.searchParams.set("from", this.range.from);
-    apiUrl.searchParams.set("to", this.range.to);
-    //console.log('apiUrl', apiUrl);
 
-    fetchJson(apiUrl).then(data => {
-      let dataValues = Object.values(data);
-      console.log("data", data);
+    apiUrl.searchParams.set("from", dateStart.toISOString());
+    apiUrl.searchParams.set("to", dateEnd.toISOString());
+
+    return fetchJson(apiUrl).then(data => {
+      const dataValues = Object.values(data);
+
       if (dataValues.length) {
         this.element.classList.remove('column-chart_loading');
         this.subElements.body.innerHTML = this.getColumnBody(dataValues);
         this.value = dataValues.reduce((sum, current) => sum + current);
         this.subElements.header.innerHTML = this.formatHeading(this.value);
       }
+
+      return data;
     });
   }
 
