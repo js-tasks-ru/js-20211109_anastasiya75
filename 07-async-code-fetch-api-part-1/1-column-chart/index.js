@@ -21,6 +21,7 @@ export default class ColumnChart {
     this.value = 0;
     this.formatHeading = formatHeading;
     this.render();
+    this.update(this.range.from, this.range.to);
   }
 
   get template() {
@@ -31,10 +32,8 @@ export default class ColumnChart {
           ${this.getLink()}
         </div>
         <div class="column-chart__container">
-           <div data-element="header" class="column-chart__header">
-           </div>
-          <div data-element="body" class="column-chart__chart">
-          </div>
+           <div data-element="header" class="column-chart__header"></div>
+          <div data-element="body" class="column-chart__chart"></div>
         </div>
       </div>
     `;
@@ -45,8 +44,6 @@ export default class ColumnChart {
     element.innerHTML = this.template;
     this.element = element.firstElementChild;
     this.subElements = this.getSubElements(this.element);
-
-    this.update(this.range.from, this.range.to);
   }
 
   getSubElements(element) {
@@ -79,23 +76,28 @@ export default class ColumnChart {
     return this.link ? `<a class="column-chart__link" href="${this.link}">View all</a>` : '';
   }
 
-  update(dateStart, dateEnd) {
+  update(dateStart = new Date(), dateEnd = new Date()) {
     const apiUrl = new URL(this.url, BACKEND_URL);
-    this.range.from = new Date(dateStart);
-    this.range.to = new Date(dateEnd);
+    // console.log('dateStart', dateStart, 'dateEnd', dateEnd);
+    // console.log('this.range.from', this.range.from);
+    // console.log('this.range.to', this.range.to);
+    // this.range.from = dateStart.toISOString();
+    // this.range.to = dateEnd.toISOString();
+    this.range.from = dateStart;
+    this.range.to = dateEnd;
     apiUrl.searchParams.set("from", this.range.from);
     apiUrl.searchParams.set("to", this.range.to);
+    //console.log('apiUrl', apiUrl);
 
     fetchJson(apiUrl).then(data => {
-      const dataValues = Object.values(data);
-      console.log(dataValues);
+      let dataValues = Object.values(data);
+      console.log("data", data);
       if (dataValues.length) {
         this.element.classList.remove('column-chart_loading');
+        this.subElements.body.innerHTML = this.getColumnBody(dataValues);
+        this.value = dataValues.reduce((sum, current) => sum + current);
+        this.subElements.header.innerHTML = this.formatHeading(this.value);
       }
-
-      this.subElements.body.innerHTML = this.getColumnBody(dataValues);
-      this.value = dataValues.reduce((sum, current) => sum + current);
-      this.subElements.header.innerHTML = this.formatHeading(this.value);
     });
   }
 
