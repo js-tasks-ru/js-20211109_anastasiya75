@@ -36,7 +36,7 @@ export default class SortableTable {
 
       return orders[order];
     };
-      //debugger;
+
     if (column) {
       const { id, order } = column.dataset;
       const newOrder = toggleOrder(order);
@@ -69,7 +69,6 @@ export default class SortableTable {
 
       const newData = await this.loadData(this.sorted.id, this.sorted.order, this.start, this.end);
       this.update(newData);
-      console.log('scroll', this.data);
     }
   }
 
@@ -83,7 +82,6 @@ export default class SortableTable {
 
     const data = await this.loadData(this.sorted.id, this.sorted.order, this.start, this.end);
     this.data = data;
-    console.log('render', this.data);
     this.subElements.body.innerHTML = this.getTableRows(data);
 
     this.initEventListeners();
@@ -206,7 +204,6 @@ export default class SortableTable {
   }
 
   sortOnClient (id, order) {
-    //const column = this.element.querySelector(`.sortable-table__cell[data-id="${id}"]`);
     const sortedData = this.sortData(id, order);
     this.update(sortedData);
   }
@@ -214,9 +211,7 @@ export default class SortableTable {
   async sortOnServer (id, order) {
     const data = await this.loadData(id, order, this.start, this.end);
     this.data = data;
-    console.log('sortOnServer', this.data);
 
-    //this.update(data);
     if (data.length) {
       this.element.classList.remove('sortable-table_empty');
       this.subElements.body.innerHTML = this.getTableRows(data);
