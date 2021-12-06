@@ -20,14 +20,19 @@ export default class ProductForm {
 
   constructor (productId) {
     this.productId = productId;
-    this.data = [];
   }
 
   async render () {
-    const [data, categories] = await Promise.all([this.productId ? this.getData(this.productId) : [this.defaultData], this.getCategories()]);
-    console.log(data, categories);
     const wrapper = document.createElement('div');
-    wrapper.innerHTML = this.getTemplate(data, categories);
+
+    if (this.productId) {
+      const [data, categories] = await Promise.all([this.getData(this.productId), this.getCategories()]);
+      wrapper.innerHTML = this.getTemplate(data[0], categories);
+    } else {
+      const categories = await this.getCategories();
+      wrapper.innerHTML = this.getTemplate(this.defaultData, categories);
+    }
+
     const element = wrapper.firstElementChild;
     this.element = element;
     this.subElements = this.getSubElements(element);
@@ -42,7 +47,7 @@ export default class ProductForm {
       status,
       price,
       discount
-    } = this.productId ? data[0] : this.defaultFormData;
+    } = data;
     return `
       <div class="product-form">
       <form data-element="productForm" class="form-grid">
@@ -70,7 +75,7 @@ export default class ProductForm {
         <div class="form-group form-group__wide">
           <label class="form-label">Фото</label>
           <ul class="sortable-list" data-element="imageListContainer">
-            ${this.createImagesList(data[0].images)}
+            ${this.productId ? this.createImagesList(data.images) : ''}
           </ul>
           <button data-element="uploadImage" type="button" class="button-primary-outline">
             <span>Загрузить</span>
