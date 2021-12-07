@@ -18,6 +18,33 @@ export default class ProductForm {
     discount: 0
   };
 
+  uploadImg = async (file) => {
+    const formData = new FormData();
+
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('https://api.imgur.com/3/image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Client-ID ${IMGUR_CLIENT_ID}`
+        },
+        body: formData,
+        referrer: ''
+      });
+
+      return await response.json();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  onSubmit = e => {
+    e.preventDefault();
+
+
+  };
+
   constructor (productId) {
     this.productId = productId;
   }
@@ -36,9 +63,18 @@ export default class ProductForm {
     const element = wrapper.firstElementChild;
     this.element = element;
     this.subElements = this.getSubElements(element);
+
+    this.initListeners();
   }
 
-  getTemplate (data, categories) {
+  initListeners() {
+    this.subElements.productForm.addEventListener('submit', this.onSubmit);
+    this.subElements.uploadImage.addEventListener('click', this.uploadImg);
+  }
+
+  di
+
+  getTemplate(data, categories) {
     const {
       title,
       description,
