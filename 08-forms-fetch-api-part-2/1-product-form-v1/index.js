@@ -113,7 +113,7 @@ export default class ProductForm {
       status,
       price,
       discount
-    } = data ;
+    } = data;
 
     return `
       <div class="product-form">
@@ -217,7 +217,6 @@ export default class ProductForm {
   }
 
   createImagesList(images) {
-
     return images.map(item => this.createImageItem(item.url, item.source).outerHTML).join('');
   }
 
@@ -272,7 +271,6 @@ export default class ProductForm {
 
     for (let item of fields) {
       let field = this.subElements.productForm.querySelector(`[name=${item}]`);
-      console.log(field);
       productData[item] = field.getAttribute('type') === 'number' || field.getAttribute('name') === 'status'
         ? parseInt(field.value) : field.value;
     }
