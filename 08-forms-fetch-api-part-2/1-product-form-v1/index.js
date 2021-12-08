@@ -73,14 +73,21 @@ export default class ProductForm {
 
   async render () {
     const wrapper = document.createElement('div');
+    const categoriesPromise = this.getCategories();
 
-    if (this.productId) {
-      const [data, categories] = await Promise.all([this.getData(this.productId), this.getCategories()]);
-      wrapper.innerHTML = this.getTemplate(data[0], categories);
-      this.data = data;
+    const productPromise = this.productId
+      ? this.getData(this.productId)
+      : [this.defaultData];
+
+    const [categoriesData, productResponse] = await Promise.all([categoriesPromise, productPromise]);
+    const [productData] = productResponse;
+    this.data = productData;
+    this.categories = categoriesData;
+
+    if (this.data) {
+      wrapper.innerHTML = this.getTemplate(this.data, this.categories);
     } else {
-      const categories = await this.getCategories();
-      wrapper.innerHTML = this.getTemplate(this.defaultData, categories);
+      wrapper.innerHTML = this.getTemplate(this.defaultData, this.categories);
     }
 
     const element = wrapper.firstElementChild;
@@ -88,6 +95,8 @@ export default class ProductForm {
     this.subElements = this.getSubElements(element);
 
     this.initListeners();
+
+    return this.element;
   }
 
   initListeners() {
@@ -104,7 +113,8 @@ export default class ProductForm {
       status,
       price,
       discount
-    } = data;
+    } = data ;
+
     return `
       <div class="product-form">
       <form data-element="productForm" class="form-grid">
@@ -113,7 +123,7 @@ export default class ProductForm {
             <label class="form-label">Название товара</label>
             <input required
               id="title"
-              value="${title}"
+              value='${title}'
               type="text"
               name="title"
               class="form-control"
@@ -193,13 +203,13 @@ export default class ProductForm {
     `;
   }
 
-  getData(id) {
+  async getData(id) {
     const urlProduct = new URL('/api/rest/products', BACKEND_URL);
     urlProduct.searchParams.set('id', id);
     return fetchJson(urlProduct);
   }
 
-  getCategories() {
+  async getCategories() {
     const urlCategories = new URL('/api/rest/categories', BACKEND_URL);
     urlCategories.searchParams.set('_sort', 'weight');
     urlCategories.searchParams.set('_refs', 'subcategory');
@@ -219,8 +229,8 @@ export default class ProductForm {
         <input type="hidden" name="source" value="${source}">
         <span>
           <img src="icon-grab.svg" data-grab-handle="" alt="grab">
-          <img class="sortable-table__cell-img" alt="${escapeHtml(source)}" src="${escapeHtml(url)}">
-          <span>${escapeHtml(source)}</span>
+          <img class="sortable-table__cell-img" alt="${source}" src="${url}">
+          <span>${source}</span>
         </span>
         <button type="button">
           <img src="icon-trash.svg" data-delete-handle="" alt="delete">
