@@ -224,8 +224,7 @@ export default class ProductForm {
     const sortableList = new SortableList({
       items
     });
-    console.log(sortableList.element);
-    console.log(this.subElements.imageListContainer);
+
     this.subElements.imageListContainer.append(sortableList.element);
   }
 
