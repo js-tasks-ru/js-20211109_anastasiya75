@@ -102,7 +102,7 @@ export default class SortableList {
     this.draggingElement.after(this.placeholder);
 
     this.draggingElement.classList.add("sortable-list__item_dragging");
-    this.draggingElement.style.cssText = `width: ${offsetWidth}px; height: ${offsetHeight}px; position: absolute; zIndex: 100;`;
+    this.draggingElement.style.cssText = `width: ${offsetWidth}px; height: ${offsetHeight}px; position: absolute; zIndex: 1000;`;
 
     this.element.append(this.draggingElement);
 
