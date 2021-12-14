@@ -31,7 +31,6 @@ export default class Page {
   initComponents() {
     const to = new Date();
     const from = new Date(new Date().setMonth(new Date().getMonth() - 1));
-    console.log(from, to);
 
     const rangePicker = new RangePicker({
       from,
@@ -81,7 +80,6 @@ export default class Page {
   }
 
   renderComponents() {
-    console.log(this.components);
     for (const [key, value] of Object.entries(this.components)) {
       const root = this.subElements[key];
       root.append(value.element);
@@ -108,7 +106,6 @@ export default class Page {
   initEventListeners () {
     this.components.rangePicker.element.addEventListener('date-select', event => {
       const { from, to } = event.detail;
-      console.log(from, to);
       this.updateComponents(from, to);
     });
   }
